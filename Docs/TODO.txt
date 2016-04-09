@@ -1,0 +1,8 @@
+Lire l'intégralité du manuel sur physics (sauf 2D)
+Faire exercice "Carrefour" :
+- scene avec plan incliné
+- camera vers haut du plan
+- sur plan 1 porte (entre 2 rectangles)
+- porte avec détection de mvt
+- au-dessus des balles qui tombent a intervalle irrégulier et aucun ne doit se manger la porte
+- coroutine, waitforseconds
