@@ -1,7 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.Networking;
 
-public class hitController : MonoBehaviour {
+public class hitController : NetworkBehaviour {
 
     [SerializeField]
     Collider swordCollider;
@@ -10,6 +11,7 @@ public class hitController : MonoBehaviour {
     Animator animController;
 
     bool isHitting;
+    //PlayerStats playerStats = new PlayerStats();
 
 	// Use this for initialization
 	void Start () {
@@ -17,7 +19,9 @@ public class hitController : MonoBehaviour {
 	}
 	
 	// Update is called once per frame
-	void Update () {	
+	void Update () {
+        if (!isLocalPlayer) { return; }
+
         if(Input.GetButton("Fire1") && !isHitting)
         {
             StartCoroutine(Hit());
@@ -34,4 +38,16 @@ public class hitController : MonoBehaviour {
         animController.SetBool("isHitting", false);
         swordCollider.enabled = false;
     }
+
+    /*
+    void OnTriggerEnter(EnemyStats enemyCollider)
+    {
+        int playerDamage = playerStats.getDamage();
+        int enemyHealth = enemyCollider.getHealth();
+
+        if(enemyHealth > 0)
+        {
+            enemyCollider.takeDamage(playerDamage);
+        }
+    }*/
 }

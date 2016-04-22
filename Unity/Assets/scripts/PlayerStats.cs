@@ -4,11 +4,17 @@ using System.Collections;
 public class PlayerStats : MonoBehaviour {
 
     private int playerHealth;
-    private bool isDead;
+    private float playerStamina;
+    private int playerStrength;
 
+    private bool isDead;
+    private bool isRolling;
+    
 	// Use this for initialization
 	void Start () {
         playerHealth = 100;
+        playerStamina = 100f;
+        playerStrength = 50;
         isDead = false;
 	}
 	
@@ -22,13 +28,36 @@ public class PlayerStats : MonoBehaviour {
         }
     }
 
-    public bool getisDead()
+    public bool getIsDead()
     {
         return isDead;
     }
 
-    void OnTriggerEnter(Collider weapon)
+    public void staminaRegen()
     {
+        if(playerStamina < 100)
+        {
+            playerStamina += Time.deltaTime * 5;
+        }
+    }
 
+    public void makeRoll()
+    {
+        playerStamina -= 25;
+    }
+
+    public float getStamina()
+    {
+        return playerStamina;
+    }
+
+    public int getStrength()
+    {
+        return playerStrength;
+    }
+
+    public int getHealth()
+    {
+        return playerHealth;
     }
 }
