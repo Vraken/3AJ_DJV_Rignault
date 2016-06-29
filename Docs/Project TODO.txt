@@ -1,0 +1,17 @@
+- Reco during game
+- Sync players (previous players don't see next)
+- Boss IA (tests)
+- Player HUD + in game menu
+- PersistentData for progression (levelling)
+- Menu :
+	- Continue
+	- New Game
+	- Settings
+	- Exit
+
+	- Solo
+	- Create game/Join game for Coop
+
+AFTER BETA :
+- Textures
+- Characters prefabs and animations
