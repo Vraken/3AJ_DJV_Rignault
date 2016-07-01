@@ -1,10 +1,21 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.UI;
 
 public class SCRIPT_HUD : MonoBehaviour {
-    
-    void OnGui()
+
+    [SerializeField]
+    PlayerController playerController;
+
+    [SerializeField]
+    Text healthText;
+
+    [SerializeField]
+    Text staminaText;
+
+    void Update()
     {
-        GUI.Box(new Rect(10, 10, 100, 90), "Loader Menu");
+        healthText.text = ""+ playerController.getPlayerStats().getHealth();
+        staminaText.text = ""+ playerController.getPlayerStats().getStamina();
     }
 }

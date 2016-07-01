@@ -82,8 +82,6 @@ public class createPoolWindow : EditorWindow
 
     private void generatEnemyPool()
     {
-        Debug.Log("youpi!!!");
-        var spawners = Selection.activeGameObject;
         GameObject[] enemies = new GameObject[enemiesNumber];
 
         var pool = GameObject.Instantiate(enemyPool);

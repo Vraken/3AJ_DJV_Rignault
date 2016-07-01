@@ -24,6 +24,11 @@ public class SCRIPT_dataManager : MonoBehaviour {
         // Chemin vers un répertoire de données persistantes (même après fermeture du jeu), crossplatform et respectant les recommandations de chaque OS.
         var path = Application.persistentDataPath + "/deicide/profile.data";
 
+        if (!File.Exists(path))
+        {
+            createProfile();
+        }
+
         #region Serialization
         // Creation d'une structure de donnée plus complexe (ne pas utiliser les PlayerPrefs pour cela.
         var data = new CharacterData
@@ -55,10 +60,7 @@ public class SCRIPT_dataManager : MonoBehaviour {
 
         if (!File.Exists(path))
         {
-            var fileCreate = File.Create(path);
-            fileCreate.Close();
-            PlayerStats characterStats = new PlayerStats();
-            saveProfile(characterStats);
+            createProfile();
         }
 
         #region Deserialization
@@ -75,8 +77,16 @@ public class SCRIPT_dataManager : MonoBehaviour {
         fileRead.Close();
 
         PlayerStats character = new PlayerStats(characterData.character_name, characterData.health, characterData.stamina, characterData.strength);
-
         return character;
         #endregion
+    }
+
+    public void createProfile()
+    {
+        var path = Application.persistentDataPath + "/deicide/profile.data";
+        var fileCreate = File.Create(path);
+        fileCreate.Close();
+        PlayerStats characterStats = new PlayerStats();
+        saveProfile(characterStats);
     }
 }

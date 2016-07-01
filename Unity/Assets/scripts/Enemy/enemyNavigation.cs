@@ -22,14 +22,12 @@ public class enemyNavigation : MonoBehaviour {
     Animator anim;
 
     [SerializeField]
-    EnemyStats enemyStats;
-
-    [SerializeField]
     public SCRIPT_enemyPool pool;
 
     Dictionary<GameObject, float> playersDistance = new Dictionary<GameObject, float>();
 
     Transform targetPlayer;
+    EnemyStats enemyStats;
 
     bool isHitting;
     bool wasMoving;
@@ -38,13 +36,14 @@ public class enemyNavigation : MonoBehaviour {
     void Start()
     {
         isHitting = false;
-        wasMoving = false;    
+        wasMoving = false;
     }
 
     void OnEnable()
     {
         nav.enabled = false;
         nav.enabled = true;
+        enemyStats = new EnemyStats(100, 2);
     }
 
     // Update is called once per frame
@@ -103,8 +102,6 @@ public class enemyNavigation : MonoBehaviour {
 
         foreach (GameObject player in players)
         {
-            if(player.activeSelf)
-            {
                 if (!playersDistance.ContainsKey(player))
                 {
                     playersDistance.Add(player, Vector3.Distance(player.transform.position, selfTransform.position));
@@ -113,7 +110,6 @@ public class enemyNavigation : MonoBehaviour {
                 {
                     playersDistance[player] = Vector3.Distance(player.transform.position, selfTransform.position);
                 }
-            }
         }
 
         foreach (KeyValuePair<GameObject, float> player in playersDistance)
@@ -149,5 +145,10 @@ public class enemyNavigation : MonoBehaviour {
         selfTransform.position = pool.poolTransform.position;
         enemyCollider.enabled = true;
         selfTransform.Rotate(90, 0, 0);
+    }
+
+    public EnemyStats getEnemyStats()
+    {
+        return enemyStats;
     }
 }

@@ -4,19 +4,26 @@ using System.Collections;
 public class EnemyStats : MonoBehaviour {
 
     private int enemyHealth;
-    private float enemyStamina;
     private int enemyStrength;
 
     private bool isDead;
 
 	// Use this for initialization
 	void Start () {
-        enemyHealth = 100;
-        enemyStrength = 2;
         isDead = false;
 	}
-	
-	public void takeDamage(int dmg)
+
+    public EnemyStats(int health, int strength)
+    {
+        this.enemyHealth = health;
+        this.enemyStrength = strength;
+    }
+
+    public EnemyStats()
+    {
+    }
+
+    public void takeDamage(int dmg)
     {
         enemyHealth -= dmg;
         
@@ -44,6 +51,11 @@ public class EnemyStats : MonoBehaviour {
     public void setHealth(int health)
     {
         this.enemyHealth = health;
+
+        if (enemyHealth > 0)
+        {
+            isDead = false;
+        }
     }
 
     public void setStrength(int strength)

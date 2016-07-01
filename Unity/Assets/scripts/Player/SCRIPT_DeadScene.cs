@@ -1,8 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections;
-using UnityEngine.Networking;
+using UnityEngine.SceneManagement;
 
-public class SCRIPT_DeadScene : NetworkBehaviour {
+public class SCRIPT_DeadScene : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
@@ -12,6 +12,6 @@ public class SCRIPT_DeadScene : NetworkBehaviour {
 	IEnumerator YouDied()
     {
         yield return new WaitForSeconds(5);
-        Network.Disconnect();
+        SceneManager.LoadScene("MainMenu");
     }
 }

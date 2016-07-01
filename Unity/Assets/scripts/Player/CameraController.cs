@@ -1,8 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-namespace UnityAsset.Characters.ThirdPerson
-{
     public class CameraController
     {
         private float XSensitivity = 2f;
@@ -30,5 +28,3 @@ namespace UnityAsset.Characters.ThirdPerson
             playerCamera.localRotation = cameraRotation;
         }
     }
-
-}

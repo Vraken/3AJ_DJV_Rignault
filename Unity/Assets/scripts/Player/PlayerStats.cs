@@ -7,6 +7,11 @@ public class PlayerStats : MonoBehaviour {
     private int playerHealth;
     private int playerStamina;
     private int playerStrength;
+    
+    private int maxHealth;
+    private int maxStamina;
+
+    private float tmpStamina;
 
     private bool isDead;
     private bool isRolling;
@@ -17,6 +22,9 @@ public class PlayerStats : MonoBehaviour {
         this.playerHealth = health;
         this.playerStamina = stamina;
         this.playerStrength = strength;
+        this.tmpStamina = (float)stamina;
+        this.maxHealth = health;
+        this.maxStamina = stamina;
     }
 
     public PlayerStats()
@@ -25,6 +33,9 @@ public class PlayerStats : MonoBehaviour {
         this.playerHealth = 100;
         this.playerStamina = 100;
         this.playerStrength = 50;
+        this.maxHealth = 100;
+        this.maxStamina = 100;
+        this.tmpStamina = 100f;
     }
 
 	// Use this for initialization
@@ -47,17 +58,19 @@ public class PlayerStats : MonoBehaviour {
         return isDead;
     }
 
-    public void staminaRegen()
+    public void staminaRegen(float sec)
     {
-        if(playerStamina < 100)
+        if(playerStamina < maxStamina)
         {
-            playerStamina += (int)Mathf.Round(Time.deltaTime * 5);
+            tmpStamina += sec * 5;
+            playerStamina = (int)Mathf.Round(tmpStamina);
         }
     }
 
     public void makeRoll()
     {
-        playerStamina -= 25;
+            playerStamina -= 25;
+            this.tmpStamina = (float)playerStamina;
     }
 
     public int getStamina()
