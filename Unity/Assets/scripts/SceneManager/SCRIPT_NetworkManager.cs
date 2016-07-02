@@ -12,7 +12,6 @@ public class SCRIPT_NetworkManager : MonoBehaviour {
     {
         if(Input.GetKeyDown(KeyCode.Escape))
         {
-            NetworkManager.Shutdown();
             Destroy(NetworkManagerGO);
             SceneManager.LoadScene("MainMenu");
         }

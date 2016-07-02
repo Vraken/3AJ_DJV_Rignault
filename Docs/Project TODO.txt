@@ -1,4 +1,5 @@
-- Sync players (previous players don't see next) + reco during game
+- Modify movement to be mannaged in update rather than fixedupdate
+- Sednd command to client with variable for player movements
 
 AFTER BETA :
 - Textures
