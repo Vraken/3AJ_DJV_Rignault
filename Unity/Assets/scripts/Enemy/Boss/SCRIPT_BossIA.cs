@@ -22,7 +22,12 @@ public class SCRIPT_BossIA : MonoBehaviour {
     [SerializeField]
     Animator bossAnimator;
 
+    [SerializeField]
+    Animator deathAnimator;
+
     Dictionary<GameObject, float> playersDistance = new Dictionary<GameObject, float>();
+
+    [SerializeField]
     GameObject[] players;
 
     Transform targetPlayer;
@@ -32,77 +37,118 @@ public class SCRIPT_BossIA : MonoBehaviour {
     bool isHitting = false;
     bool isRushing = false;
     bool isDying = false;
-    float timeSinceAction = 0;
+    bool isPhase2 = false;
+    float timeSinceAction = 3;
 
     // Use this for initialization
     void OnEnable () {
-        bossStats = new EnemyStats(1000, 25);
+        bossStats = new EnemyStats(5000, 25);
 	}
 	
 	// Update is called once per frame
-	void Update () {
+	void Update ()
+    {
+        //If boss is dead, launch animation
         if (bossStats.getIsDead() && !isDying)
         {
             isDying = true;
             Die();
         }
+
+        //If boss dying, do nothing
         if(isDying)
         {
             return;
         }
 
+        //Trigger Phase 2  when half HP for additional move
+        if(bossStats.getHealth() < bossStats.getMaxHealth()/2 && !isPhase2)
+        {
+            isPhase2 = true;
+        }
+
+        //Get the target and the information
         targetPlayer = getNearestPlayer();
+        nav.SetDestination(targetPlayer.position);
         int distanceFromTarget = (int)nav.remainingDistance;
 
+        //When boss is doing nothing
         if (!isHitting)
         {
+
+            //Always rotate towards player
+            Vector3 direction = (targetPlayer.position - selfTransform.position).normalized;
+            Quaternion lookRotation = Quaternion.LookRotation(direction);
+            selfTransform.rotation = Quaternion.Slerp(selfTransform.rotation, lookRotation, Time.deltaTime * 10f);
+
+            //Generate rdm to see if boss attacks
             int rdm = Random.Range(1, 100);
             rdm += (int)timeSinceAction;
 
-            if(rdm > 99)
+            if(rdm > 103)
             {
                 nav.Stop();
 
                 isHitting = true;
                 timeSinceAction = 0;
 
-                rdm = Random.Range(1, 100);
-                if(rdm > 75)
+                //When close, attack or aoe in phase 2
+                if (distanceFromTarget < 10)
                 {
-                    if(distanceFromTarget < 10)
+                    if(isPhase2)
                     {
-                        bossAnimator.SetTrigger("AoESpell");
-                        StartCoroutine(AoeSpell());
-                    } else
-                    {
-                        bossAnimator.SetTrigger("Rush");
-                        StartCoroutine(Rush(targetPlayer));
+                        rdm = Random.Range(1, 100);
+                        if (rdm > 75)
+                        {
+                            bossAnimator.SetTrigger("AoESpell");
+                            StartCoroutine(AoeSpell());
+                        }
+                        else
+                        {
+                            bossAnimator.SetTrigger("Attack");
+                            StartCoroutine(Attack());
+                        }
                     }
+                    else
+                    {
+                        bossAnimator.SetTrigger("Attack");
+                        StartCoroutine(Attack());
+                    }
+                }
+                //Else rush on target
+                else
+                {
+                    bossAnimator.SetTrigger("Rush");
+                    StartCoroutine(Rush(targetPlayer));
+                }
+            }
+            //If rdm didn't fire attack, move to target
+            else
+            {
+                if(distanceFromTarget > 5)
+                {
+                    nav.Resume();
                 }
                 else
                 {
-                    bossAnimator.SetTrigger("Attack");
-                    StartCoroutine(Attack());
-                }
-            }
-            else if(isRushing)
-            {
-                if(nav.remainingDistance <= 10)
-                {
                     nav.Stop();
-                    nav.speed = 5;
-                    isRushing = false;
-                    isHitting = false;
-                    weaponCollider.enabled = false;
-                    bossAnimator.SetTrigger("Rushed");
                 }
-            }
-            else
-            {
-                nav.SetDestination(targetPlayer.position);
-                nav.Resume();
                 isHitting = false;
                 timeSinceAction += Time.deltaTime;
+            }
+        }
+        
+        //Used to stop the rush and the rushing position
+        if (isRushing)
+        {
+            if (nav.remainingDistance <= 3)
+            {
+                nav.Stop();
+                nav.speed = 5;
+                isRushing = false;
+                isHitting = false;
+                weaponCollider.enabled = false;
+                bossAnimator.SetTrigger("Rushed");
             }
         }
     }
@@ -114,8 +160,7 @@ public class SCRIPT_BossIA : MonoBehaviour {
 
         int count = 0;
 
-        players = GameObject.FindGameObjectsWithTag("Player");
-
+        //Generate the dictionary of players and their positions
         foreach (GameObject player in players)
         {
             if (!playersDistance.ContainsKey(player))
@@ -128,6 +173,7 @@ public class SCRIPT_BossIA : MonoBehaviour {
             }
         }
 
+        //Search for the closest
         foreach (KeyValuePair<GameObject, float> player in playersDistance)
         {
             if (count == 0)
@@ -149,7 +195,8 @@ public class SCRIPT_BossIA : MonoBehaviour {
 
     void Die()
     {
-        bossAnimator.SetTrigger("Die");
+        deathAnimator.enabled = true;
+        deathAnimator.SetTrigger("Die");
     }
 
     IEnumerator Attack()
@@ -174,7 +221,7 @@ public class SCRIPT_BossIA : MonoBehaviour {
     {
         yield return new WaitForSeconds(1f);
         weaponCollider.enabled = true;
-        nav.speed = 20;
+        nav.speed = 40;
         nav.SetDestination(target.position);
         nav.Resume();
         isRushing = true;

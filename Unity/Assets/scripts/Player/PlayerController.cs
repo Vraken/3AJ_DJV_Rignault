@@ -109,6 +109,7 @@ public class PlayerController : NetworkBehaviour
 
         isGrounded = GroundCheck();
 
+        //If on ground and doing nothing, check for input to move player
         if (isGrounded && !isRolling && (Input.GetAxis("Horizontal") != 0 || Input.GetAxis("Vertical") != 0))
         {
             Vector3 MoveDirection = playerCamera.transform.forward * Input.GetAxis("Vertical") + playerCamera.transform.right * Input.GetAxis("Horizontal");
@@ -121,6 +122,7 @@ public class PlayerController : NetworkBehaviour
         {
             playerRigidbody.drag = 1f;
 
+            //Get input jump and perform jump
             if (Input.GetButtonDown("Jump") && !isJumping && !isRolling)
             {
                 playerRigidbody.drag = 0f;
@@ -128,6 +130,7 @@ public class PlayerController : NetworkBehaviour
                 Vector3 jump = new Vector3(0f, jumpForce, 0f);
                 playerRigidbody.AddForce(jump, ForceMode.Impulse);
             }   
+            //Get input roll and perform roll
             if(Input.GetButtonDown("Roll") && !isJumping && !isRolling && playerStats.getStamina() >= 25)
             {
                 playerStats.makeRoll();
@@ -154,6 +157,7 @@ public class PlayerController : NetworkBehaviour
     [ClientRpc]
     public void RpcRoll(Vector3 rollDirection)
     {
+        //depending on the direction of the roll, fire a different animation
         if (rollDirection.x > 0 && rollDirection.z == 0)
         {
             rollController.SetTrigger("RollF");
@@ -207,13 +211,15 @@ public class PlayerController : NetworkBehaviour
 
     IEnumerator Roll(Vector3 rollDirection)
     {
+        //Change all the variables necessary to the rolls
         isRolling = true;
         playerTranform.gameObject.layer = 17;
-        playerRigidbody.constraints = RigidbodyConstraints.FreezePositionY | RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
+        playerRigidbody.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
         playerRigidbody.velocity = Vector3.zero;
         Vector3 rollForce = new Vector3();
         rollController.enabled = true;
 
+        //Detect the rol direction to apply the force in the right direction
         if (rollDirection.x > 0 && rollDirection.z == 0)
         {
             rollForce = new Vector3(0f, 0f, 1000f);
@@ -246,6 +252,8 @@ public class PlayerController : NetworkBehaviour
         {
             rollForce = new Vector3(0f, 0f, -1000f);
         }
+
+        //Reset all the variable to end the roll
         playerRigidbody.AddRelativeForce(rollForce, ForceMode.Impulse);
         yield return new WaitForSeconds(1.0f);
         playerTranform.gameObject.layer = 9;

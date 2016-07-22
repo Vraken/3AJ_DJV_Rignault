@@ -5,6 +5,7 @@ public class EnemyStats : MonoBehaviour {
 
     private int enemyHealth;
     private int enemyStrength;
+    private int enemyMaxHealth;
 
     private bool isDead;
 
@@ -16,6 +17,7 @@ public class EnemyStats : MonoBehaviour {
     public EnemyStats(int health, int strength)
     {
         this.enemyHealth = health;
+        this.enemyMaxHealth = health;
         this.enemyStrength = strength;
     }
 
@@ -41,6 +43,11 @@ public class EnemyStats : MonoBehaviour {
     public int getHealth()
     {
         return enemyHealth;
+    }
+
+    public int getMaxHealth()
+    {
+        return enemyMaxHealth;
     }
 
     public int getStrength()
