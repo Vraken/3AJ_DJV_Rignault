@@ -20,7 +20,7 @@ public class SCRIPT_enemyPool : NetworkBehaviour {
             Instance = this;
             return;
         }
-        Destroy(this.gameObject);
+        //Destroy(this.gameObject);
     }
     #endregion
 
@@ -47,6 +47,13 @@ public class SCRIPT_enemyPool : NetworkBehaviour {
 
             return availableEnemies;
         }
+    }
+
+    public void stopSpawning()
+    {
+        totalSpawn = 100;
+        deathCount = 50 + availableEnemies.Count;
+        Debug.Log(deathCount);
     }
 
     public GameObject GetNextAvailableEnemy()

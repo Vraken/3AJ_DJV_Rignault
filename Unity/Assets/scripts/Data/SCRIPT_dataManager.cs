@@ -14,12 +14,11 @@ public class CharacterData
 }
 
 
-public class SCRIPT_dataManager : MonoBehaviour {
-
-    [SerializeField]
+public class SCRIPT_dataManager {
+    
     private CharacterData characterData;
 
-    public void saveProfile(PlayerStats character)
+    public static void saveProfile(PlayerStats character)
     {
         // Chemin vers un répertoire de données persistantes (même après fermeture du jeu), crossplatform et respectant les recommandations de chaque OS.
         var path = Application.persistentDataPath + "/deicide/profile.data";
@@ -81,9 +80,10 @@ public class SCRIPT_dataManager : MonoBehaviour {
         #endregion
     }
 
-    public void createProfile()
+    public static void createProfile()
     {
         var path = Application.persistentDataPath + "/deicide/profile.data";
+        var folder = Directory.CreateDirectory(Application.persistentDataPath + "/deicide");
         var fileCreate = File.Create(path);
         fileCreate.Close();
         PlayerStats characterStats = new PlayerStats();

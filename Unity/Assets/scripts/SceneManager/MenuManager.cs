@@ -13,9 +13,7 @@ public class MenuManager : MonoBehaviour
             NetworkManager.Shutdown();
         }
     }
-
-    private SCRIPT_dataManager dataManager = new SCRIPT_dataManager();
-
+    
     public void LoadGame()
     {
         SceneManager.LoadScene("NetworkMenu");
@@ -24,7 +22,7 @@ public class MenuManager : MonoBehaviour
     public void NewGame()
     {
         PlayerStats newCharac = new PlayerStats();
-        dataManager.saveProfile(newCharac);
+        SCRIPT_dataManager.saveProfile(newCharac);
         SceneManager.LoadScene("NetworkMenu");
     }
 

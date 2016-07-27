@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class PlayerStats : MonoBehaviour {
+public class PlayerStats {
 
     private string playerName;
     private int playerHealth;
@@ -13,8 +13,9 @@ public class PlayerStats : MonoBehaviour {
 
     private float tmpStamina;
 
-    private bool isDead;
+    private bool isDead = false;
     private bool isRolling;
+    private bool isGodMode = false;
 
     public PlayerStats(string name, int health, int stamina, int strength)
     {
@@ -38,6 +39,11 @@ public class PlayerStats : MonoBehaviour {
         this.tmpStamina = 100f;
     }
 
+    public void setGodMode()
+    {
+        isGodMode = true;
+    }
+
 	// Use this for initialization
 	void Start () {
         isDead = false;
@@ -45,11 +51,14 @@ public class PlayerStats : MonoBehaviour {
 	
 	public void takeDamage(int dmg)
     {
-        playerHealth -= dmg;
-        
-        if(playerHealth <= 0)
+        if(!isGodMode)
         {
-            isDead = true;
+            playerHealth -= dmg;
+
+            if (playerHealth <= 0)
+            {
+                isDead = true;
+            }
         }
     }
 

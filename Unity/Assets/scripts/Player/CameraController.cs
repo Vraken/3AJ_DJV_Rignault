@@ -16,7 +16,7 @@ using System.Collections;
             cameraRotation = playerCamera.localRotation;
         }
 
-        public void LookRotation(Transform playerTransform, Transform playerCamera)
+        public Quaternion LookRotation(Transform playerTransform, Transform playerCamera)
         {
             float yRot = Input.GetAxis("Mouse X") * XSensitivity;
             float xRot = Input.GetAxis("Mouse Y") * YSensitivity;
@@ -26,5 +26,7 @@ using System.Collections;
 
             playerTransform.localRotation = playerRotation;
             playerCamera.localRotation = cameraRotation;
+
+            return playerRotation;
         }
     }

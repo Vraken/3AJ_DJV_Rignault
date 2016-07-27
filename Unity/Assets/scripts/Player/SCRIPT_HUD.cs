@@ -15,7 +15,10 @@ public class SCRIPT_HUD : MonoBehaviour {
 
     void Update()
     {
-        healthText.text = ""+ playerController.getPlayerStats().getHealth();
-        staminaText.text = ""+ playerController.getPlayerStats().getStamina();
+        if (playerController != null && playerController.getPlayerStats() != null)
+        {
+            healthText.text = "" + playerController.getPlayerStats().getHealth();
+            staminaText.text = "" + playerController.getPlayerStats().getStamina();
+        }
     }
 }

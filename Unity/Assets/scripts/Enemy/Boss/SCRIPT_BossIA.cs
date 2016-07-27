@@ -2,7 +2,8 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public class SCRIPT_BossIA : MonoBehaviour {
+public class SCRIPT_BossIA : MonoBehaviour
+{
 
     [SerializeField]
     NavMeshAgent nav;
@@ -38,15 +39,17 @@ public class SCRIPT_BossIA : MonoBehaviour {
     bool isRushing = false;
     bool isDying = false;
     bool isPhase2 = false;
+    bool isTransition = true;
     float timeSinceAction = 3;
 
     // Use this for initialization
-    void OnEnable () {
+    void OnEnable()
+    {
         bossStats = new EnemyStats(5000, 25);
-	}
-	
-	// Update is called once per frame
-	void Update ()
+    }
+
+    // Update is called once per frame
+    void Update()
     {
         //If boss is dead, launch animation
         if (bossStats.getIsDead() && !isDying)
@@ -56,25 +59,37 @@ public class SCRIPT_BossIA : MonoBehaviour {
         }
 
         //If boss dying, do nothing
-        if(isDying)
+        if (isDying)
         {
             return;
         }
 
         //Trigger Phase 2  when half HP for additional move
-        if(bossStats.getHealth() < bossStats.getMaxHealth()/2 && !isPhase2)
+        if (bossStats.getHealth() < bossStats.getMaxHealth() / 2 && !isPhase2)
         {
             isPhase2 = true;
         }
 
-        //Get the target and the information
-        targetPlayer = getNearestPlayer();
-        nav.SetDestination(targetPlayer.position);
-        int distanceFromTarget = (int)nav.remainingDistance;
-
         //When boss is doing nothing
         if (!isHitting)
         {
+            if(isTransition && isPhase2)
+            {
+                nav.Stop();
+                isHitting = true;
+                timeSinceAction = 0;
+
+                bossAnimator.SetTrigger("AoESpell");
+                StartCoroutine(AoeSpell());
+
+                isTransition = false;
+                return;
+            }
+
+            //Get the target and the information
+            targetPlayer = getNearestPlayer();
+            nav.SetDestination(targetPlayer.position);
+            int distanceFromTarget = (int)nav.remainingDistance;
 
             //Always rotate towards player
             Vector3 direction = (targetPlayer.position - selfTransform.position).normalized;
@@ -85,7 +100,7 @@ public class SCRIPT_BossIA : MonoBehaviour {
             int rdm = Random.Range(1, 100);
             rdm += (int)timeSinceAction;
 
-            if(rdm > 103)
+            if (rdm > 103)
             {
                 nav.Stop();
 
@@ -95,7 +110,7 @@ public class SCRIPT_BossIA : MonoBehaviour {
                 //When close, attack or aoe in phase 2
                 if (distanceFromTarget < 10)
                 {
-                    if(isPhase2)
+                    if (isPhase2)
                     {
                         rdm = Random.Range(1, 100);
                         if (rdm > 75)
@@ -125,7 +140,7 @@ public class SCRIPT_BossIA : MonoBehaviour {
             //If rdm didn't fire attack, move to target
             else
             {
-                if(distanceFromTarget > 5)
+                if (distanceFromTarget > 10)
                 {
                     nav.Resume();
                 }
@@ -137,7 +152,7 @@ public class SCRIPT_BossIA : MonoBehaviour {
                 timeSinceAction += Time.deltaTime;
             }
         }
-        
+
         //Used to stop the rush and the rushing position
         if (isRushing)
         {

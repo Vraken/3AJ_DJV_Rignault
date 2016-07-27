@@ -43,34 +43,32 @@ public class enemyNavigation : MonoBehaviour {
     {
         nav.enabled = false;
         nav.enabled = true;
-        enemyStats = new EnemyStats(100, 2);
+        enemyStats = gameObject.AddComponent<EnemyStats>();
+        enemyStats.setHealth(100);
+        enemyStats.setStrength(2);
     }
 
     // Update is called once per frame
     void Update () {
-        //if no health then die
         if (enemyStats.getIsDead())
         {
             StartCoroutine(Die());
         }
 
-        //Get target
         targetPlayer = getNearestPlayer();
+
         nav.SetDestination(targetPlayer.position);
 
-        //If doing nothing then move towards player
         if (!isHitting && !wasMoving)
         {
             nav.Resume();
             wasMoving = true;
         }
-        //If not facing player, move
         else if(isHitting && !Physics.Raycast(nav.transform.position, nav.transform.TransformDirection(Vector3.forward), 1f))
         {
             nav.Resume();
             wasMoving = true;
         }
-        //Else stop
         else if(isHitting && Physics.Raycast(nav.transform.position, nav.transform.TransformDirection(Vector3.forward), 1f))
         {
             nav.Stop();
@@ -104,7 +102,6 @@ public class enemyNavigation : MonoBehaviour {
 
         int count = 0;
 
-        //Generate dictionary of players and their positions
         foreach (GameObject player in players)
         {
                 if (!playersDistance.ContainsKey(player))
@@ -117,7 +114,6 @@ public class enemyNavigation : MonoBehaviour {
                 }
         }
 
-        //Search for the closest player
         foreach (KeyValuePair<GameObject, float> player in playersDistance)
         {
             if(count == 0)
@@ -139,7 +135,6 @@ public class enemyNavigation : MonoBehaviour {
 
     IEnumerator Die()
     {
-        //Make enemy die
         enemyCollider.enabled = false;
         anim.SetBool("isDying", true);
         yield return new WaitForSeconds(1);
@@ -147,10 +142,8 @@ public class enemyNavigation : MonoBehaviour {
         selfTransform.Rotate(-90, 0, 0);
         selfTransform.gameObject.SetActive(false);
 
-        //Release from "busy" enemies
         pool.ReleaseEnemy(selfTransform.gameObject);
 
-        //Reset position
         selfTransform.position = pool.poolTransform.position;
         enemyCollider.enabled = true;
         selfTransform.Rotate(90, 0, 0);

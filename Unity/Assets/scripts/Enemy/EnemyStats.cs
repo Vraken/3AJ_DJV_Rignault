@@ -1,7 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class EnemyStats : MonoBehaviour {
+public class EnemyStats : MonoBehaviour
+{
 
     private int enemyHealth;
     private int enemyStrength;
@@ -9,10 +10,11 @@ public class EnemyStats : MonoBehaviour {
 
     private bool isDead;
 
-	// Use this for initialization
-	void Start () {
+    // Use this for initialization
+    void Start()
+    {
         isDead = false;
-	}
+    }
 
     public EnemyStats(int health, int strength)
     {
@@ -28,8 +30,8 @@ public class EnemyStats : MonoBehaviour {
     public void takeDamage(int dmg)
     {
         enemyHealth -= dmg;
-        
-        if(enemyHealth <= 0)
+
+        if (enemyHealth <= 0)
         {
             isDead = true;
         }

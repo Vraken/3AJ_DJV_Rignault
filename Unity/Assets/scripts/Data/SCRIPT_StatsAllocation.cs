@@ -100,7 +100,7 @@ public class SCRIPT_StatsAllocation : MonoBehaviour
     public void saveStats()
     {
         PlayerStats newStats = new PlayerStats(playerStats.getName(), health, stamina, strength);
-        dataManager.saveProfile(newStats);
+        SCRIPT_dataManager.saveProfile(newStats);
         SceneManager.LoadScene("MainMenu");
     }
 }
